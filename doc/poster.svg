@@ -137,9 +137,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="1080.3801"
-     inkscape:cy="1597.2097"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="800.81705"
+     inkscape:cy="1416.3314"
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -168,7 +168,7 @@
        position="1189.567,1001.183"
        orientation="1,0"
        id="guide4546"
-       inkscape:locked="true"
+       inkscape:locked="false"
        inkscape:label=""
        inkscape:color="rgb(0,0,255)" />
     <sodipodi:guide
@@ -422,7 +422,7 @@
          id="tspan1081"
          x="27.516661"
          y="132.97499"
-         style="font-size:19.75555611px;stroke-width:0.26458332">Allgemeines</tspan></text>
+         style="font-size:19.75555611px;stroke-width:0.26458332">General</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.39999962px;line-height:1.25;font-family:'Libre Franklin';-inkscape-font-specification:'Libre Franklin';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
