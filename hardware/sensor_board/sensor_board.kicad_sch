@@ -964,7 +964,6 @@
     )
   )
 
-
   (junction (at 40.64 24.13) (diameter 0) (color 0 0 0 0))
   (junction (at 40.64 44.45) (diameter 0) (color 0 0 0 0))
   (junction (at 40.64 166.37) (diameter 0) (color 0 0 0 0))
@@ -980,6 +979,7 @@
   (junction (at 182.88 46.99) (diameter 0) (color 0 0 0 0))
   (junction (at 193.04 80.01) (diameter 0) (color 0 0 0 0))
   (junction (at 194.31 34.29) (diameter 0) (color 0 0 0 0))
+  (junction (at 194.31 53.34) (diameter 0) (color 0 0 0 0))
   (junction (at 199.39 137.16) (diameter 0) (color 0 0 0 0))
   (junction (at 199.39 147.32) (diameter 0) (color 0 0 0 0))
   (junction (at 228.6 139.7) (diameter 0) (color 0 0 0 0))
@@ -1364,9 +1364,17 @@
     (stroke (width 0) (type solid) (color 0 0 0 0))
     (uuid 16ffede1-959e-43bf-af28-7bfcb9b161fe)
   )
-  (wire (pts (xy 194.31 52.07) (xy 194.31 55.88))
+  (wire (pts (xy 194.31 52.07) (xy 194.31 53.34))
     (stroke (width 0) (type solid) (color 0 0 0 0))
     (uuid a6d5e9a1-b79b-4a23-ba14-53aa2fbba7ca)
+  )
+  (wire (pts (xy 194.31 53.34) (xy 194.31 55.88))
+    (stroke (width 0) (type solid) (color 0 0 0 0))
+    (uuid a6d5e9a1-b79b-4a23-ba14-53aa2fbba7ca)
+  )
+  (wire (pts (xy 194.31 53.34) (xy 196.85 53.34))
+    (stroke (width 0) (type solid) (color 0 0 0 0))
+    (uuid 8a9c544e-2726-4885-babd-67bf1568901c)
   )
   (wire (pts (xy 199.39 132.08) (xy 228.6 132.08))
     (stroke (width 0) (type solid) (color 0 0 0 0))
@@ -1475,6 +1483,14 @@
   (wire (pts (xy 257.81 162.56) (xy 257.81 161.29))
     (stroke (width 0) (type solid) (color 0 0 0 0))
     (uuid e851f48f-9faa-4f30-842b-a90c3e4c5fce)
+  )
+  (wire (pts (xy 271.78 162.56) (xy 274.32 162.56))
+    (stroke (width 0) (type solid) (color 0 0 0 0))
+    (uuid 51f8f70f-c2d9-42a7-81ca-2fbde25e7c96)
+  )
+  (wire (pts (xy 274.32 162.56) (xy 274.32 161.29))
+    (stroke (width 0) (type solid) (color 0 0 0 0))
+    (uuid 51f8f70f-c2d9-42a7-81ca-2fbde25e7c96)
   )
   (polyline (pts (xy 156.21 21.59) (xy 156.21 109.22))
     (stroke (width 0) (type dash) (color 0 0 0 0))
@@ -1807,6 +1823,24 @@
     (pin "1" (uuid c962c191-ea63-4650-81b6-a5bc3f7360e7))
   )
 
+  (symbol (lib_id "power:PWR_FLAG") (at 196.85 53.34 270) (unit 1)
+    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (uuid 3e86196d-7be5-4f72-a075-4619159f1c7f)
+    (property "Reference" "#FLG01" (id 0) (at 198.755 53.34 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "PWR_FLAG" (id 1) (at 200.66 53.3399 90)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "" (id 2) (at 196.85 53.34 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (id 3) (at 196.85 53.34 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 8ed36095-46a4-400a-beea-a113ca74e985))
+  )
+
   (symbol (lib_id "power:PWR_FLAG") (at 257.81 161.29 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 1d3ecf29-19a5-423b-9e86-10e11573b1b7)
@@ -1821,6 +1855,22 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid d44b99bf-6b8c-47a8-b629-6459070e7307))
+  )
+
+  (symbol (lib_id "power:PWR_FLAG") (at 274.32 161.29 0) (unit 1)
+    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (uuid 74761b04-2e0e-48bc-8cd2-df69861a8420)
+    (property "Reference" "#FLG0102" (id 0) (at 274.32 159.385 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "PWR_FLAG" (id 1) (at 274.32 156.21 0))
+    (property "Footprint" "" (id 2) (at 274.32 161.29 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (id 3) (at 274.32 161.29 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid a3190101-3fed-47b8-87f9-5bd05f8f75fa))
   )
 
   (symbol (lib_id "power:GND") (at 40.64 45.72 0) (unit 1)
@@ -1953,6 +2003,24 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 3d284414-4831-4735-8564-02947afc9c74))
+  )
+
+  (symbol (lib_id "power:GND") (at 271.78 162.56 270) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid 111fc8cc-7747-4f2e-9fcd-4c063190a483)
+    (property "Reference" "#PWR0102" (id 0) (at 265.43 162.56 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (id 1) (at 264.16 162.5599 90)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "" (id 2) (at 271.78 162.56 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (id 3) (at 271.78 162.56 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 2a839265-8f98-41ae-b9ea-a8127acc06ff))
   )
 
   (symbol (lib_id "Device:R") (at 40.64 160.02 0) (unit 1)
@@ -2446,8 +2514,14 @@
   )
 
   (symbol_instances
+    (path "/3e86196d-7be5-4f72-a075-4619159f1c7f"
+      (reference "#FLG01") (unit 1) (value "PWR_FLAG") (footprint "")
+    )
     (path "/1d3ecf29-19a5-423b-9e86-10e11573b1b7"
       (reference "#FLG0101") (unit 1) (value "PWR_FLAG") (footprint "")
+    )
+    (path "/74761b04-2e0e-48bc-8cd2-df69861a8420"
+      (reference "#FLG0102") (unit 1) (value "PWR_FLAG") (footprint "")
     )
     (path "/8306a43a-0f6c-479d-b1d9-b6e95367aa2c"
       (reference "#PWR01") (unit 1) (value "VDD") (footprint "")
@@ -2521,20 +2595,11 @@
     (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/b593a421-fb04-431b-a69f-3fc8534788d0"
       (reference "#PWR024") (unit 1) (value "GND") (footprint "")
     )
-    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/b34e0c88-73d0-4fb3-a9d7-701d175303e9"
-      (reference "#PWR025") (unit 1) (value "VDD") (footprint "")
-    )
     (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/e44e48f3-3b0a-4d06-ba81-f082667f0867"
       (reference "#PWR026") (unit 1) (value "GND") (footprint "")
     )
     (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/828cf58b-d97d-4c30-8dcb-8efce423211c"
       (reference "#PWR027") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/c01d8e07-19b0-49c3-91c0-1c6475a0896f"
-      (reference "#PWR028") (unit 1) (value "VDD") (footprint "")
-    )
-    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/fb54e666-356e-4647-8a05-d0c8bf4234d4"
-      (reference "#PWR029") (unit 1) (value "VDD") (footprint "")
     )
     (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/811bdb1d-8b3c-44ab-924c-e552095907d7"
       (reference "#PWR030") (unit 1) (value "GND") (footprint "")
@@ -2563,11 +2628,14 @@
     (path "/5266303c-cc26-4361-a3c7-41c3c779268d/943c1708-2f06-4a60-b0cd-ed5ed0a765d6"
       (reference "#PWR038") (unit 1) (value "GND") (footprint "")
     )
-    (path "/5266303c-cc26-4361-a3c7-41c3c779268d/5ea51cc6-628a-4b08-881b-78cf8dbcec67"
-      (reference "#PWR039") (unit 1) (value "VDD") (footprint "")
-    )
     (path "/adfd184c-f938-41aa-8cc3-19d2e60b847d"
       (reference "#PWR0101") (unit 1) (value "+36V") (footprint "")
+    )
+    (path "/111fc8cc-7747-4f2e-9fcd-4c063190a483"
+      (reference "#PWR0102") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/5266303c-cc26-4361-a3c7-41c3c779268d/4c9a339a-72e6-4346-b113-de4a084399ac"
+      (reference "#PWR0103") (unit 1) (value "+5V") (footprint "")
     )
     (path "/cea51140-d1a5-4498-ac28-6d3c6af90a7f"
       (reference "C1") (unit 1) (value "10u / 10V") (footprint "")
@@ -2689,13 +2757,13 @@
     (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/212acce7-0340-4fbc-a357-e1e860bc3e15"
       (reference "U4") (unit 1) (value "SHT30-DIS") (footprint "Sensor_Humidity:Sensirion_DFN-8-1EP_2.5x2.5mm_P0.5mm_EP1.1x1.7mm")
     )
-    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/2713ac11-4919-4bfe-87f5-9e015b3083d0"
-      (reference "U5") (unit 1) (value "BMP384") (footprint "")
+    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/f453ff1f-a773-45fc-ae5c-94711b2be9d1"
+      (reference "U5") (unit 1) (value "BMP384") (footprint "dp:BMP384")
     )
-    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/72869bcb-c605-4b0f-9b78-a3c7d0346b20"
-      (reference "U6") (unit 1) (value "SCD40") (footprint "")
+    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/0afe84fd-9a71-4e85-ba4a-ded33ce31373"
+      (reference "U6") (unit 1) (value "SCD4x") (footprint "dp:SCD4x")
     )
-    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/bcd0e211-90eb-41d5-bf7f-31ace572862e"
+    (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/0544bcc2-7380-4571-bf84-ab641f79cefc"
       (reference "U7") (unit 1) (value "SGP30") (footprint "")
     )
     (path "/c4dbf479-cf2f-484d-ade6-def83986d8b6/921066e0-977a-4ced-abaa-e12813cdb4e7"

@@ -329,7 +329,9 @@
   },
   "libraries": {
     "pinned_footprint_libs": [],
-    "pinned_symbol_libs": []
+    "pinned_symbol_libs": [
+      "ownLib"
+    ]
   },
   "meta": {
     "filename": "sensor_board.kicad_pro",
