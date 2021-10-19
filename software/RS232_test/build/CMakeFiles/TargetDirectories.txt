@@ -1,0 +1,6 @@
+/home/patrick/git/incusens/software/RS232_test/build/CMakeFiles/rebuild_cache.dir
+/home/patrick/git/incusens/software/RS232_test/build/CMakeFiles/edit_cache.dir
+/home/patrick/git/incusens/software/RS232_test/build/CMakeFiles/RS232Tester.dir
+/home/patrick/git/incusens/software/RS232_test/build/toxic_spokes/CMakeFiles/rebuild_cache.dir
+/home/patrick/git/incusens/software/RS232_test/build/toxic_spokes/CMakeFiles/edit_cache.dir
+/home/patrick/git/incusens/software/RS232_test/build/toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir

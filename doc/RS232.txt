@@ -1,0 +1,16 @@
+Schnittstellenprotokoll RS232 HERAcell
+
+Frame: < Startbit | Command | Data | CRC | Stopbit >
+
+Command: LLLL CCCC <- L = Length of Data; C = Command number
+
+CRC = 1 - (Command XOR Data1 XOR Data2 XOR ... XOR DataN)
+
+++++++++++++
+Read Closed Loop Data:
+
+Command = 0110 0001
+Data1 = 0001 00XX (For XX: 00 = Temperature; 01 = CO2; DesinfectTemperature)
+
+Message from Incubator:
+Target Value (2 Byte) | Current Value (4 Byte) | Internal Data (7 Byte)
