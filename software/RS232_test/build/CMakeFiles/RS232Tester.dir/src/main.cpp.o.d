@@ -268,4 +268,9 @@ CMakeFiles/RS232Tester.dir/src/main.cpp.o: \
  /usr/include/c++/11.1.0/tr1/poly_hermite.tcc \
  /usr/include/c++/11.1.0/tr1/poly_laguerre.tcc \
  /usr/include/c++/11.1.0/tr1/riemann_zeta.tcc /usr/include/fmt/core.h \
- /usr/include/c++/11.1.0/cstring
+ /usr/include/c++/11.1.0/cstring /usr/include/c++/11.1.0/fstream \
+ /usr/include/c++/11.1.0/bits/codecvt.h \
+ /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/basic_file.h \
+ /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++io.h \
+ /usr/include/c++/11.1.0/bits/fstream.tcc /usr/include/c++/11.1.0/sstream \
+ /usr/include/c++/11.1.0/bits/sstream.tcc

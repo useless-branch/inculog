@@ -13,7 +13,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     message("Compiling with: GCC Compiler")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options("-Weverything")
-    add_compile_options("-Wall" "-Wextra" "-pedantic" "-fsanitize=thread")
+    add_compile_options("-Wall" "-Wextra" "-pedantic" "-Wfatal-errors" "-fsanitize=thread")
     message("Compiling with: Clang Compiler")
 endif()
 

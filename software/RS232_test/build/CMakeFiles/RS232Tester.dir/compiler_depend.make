@@ -373,8 +373,21 @@ CMakeFiles/RS232Tester.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/c++/11.1.0/tr1/poly_laguerre.tcc \
   /usr/include/c++/11.1.0/tr1/riemann_zeta.tcc \
   /usr/include/fmt/core.h \
-  /usr/include/c++/11.1.0/cstring
+  /usr/include/c++/11.1.0/cstring \
+  /usr/include/c++/11.1.0/fstream \
+  /usr/include/c++/11.1.0/bits/codecvt.h \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/basic_file.h \
+  /usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++io.h \
+  /usr/include/c++/11.1.0/bits/fstream.tcc \
+  /usr/include/c++/11.1.0/sstream \
+  /usr/include/c++/11.1.0/bits/sstream.tcc
 
+
+/usr/include/c++/11.1.0/bits/sstream.tcc:
+
+/usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/basic_file.h:
+
+/usr/include/c++/11.1.0/fstream:
 
 /usr/include/c++/11.1.0/cstring:
 
@@ -546,6 +559,8 @@ CMakeFiles/RS232Tester.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/bits/setjmp.h:
 
+/usr/include/c++/11.1.0/x86_64-pc-linux-gnu/bits/c++io.h:
+
 /usr/include/bits/thread-shared-types.h:
 
 /usr/include/bits/pthreadtypes.h:
@@ -668,6 +683,8 @@ CMakeFiles/RS232Tester.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/bits/floatn.h:
 
+/usr/include/c++/11.1.0/bits/codecvt.h:
+
 /usr/include/bits/libc-header-start.h:
 
 /usr/include/c++/11.1.0/backward/binders.h:
@@ -760,6 +777,8 @@ CMakeFiles/RS232Tester.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/stdc-predef.h:
 
+/usr/include/c++/11.1.0/bits/fstream.tcc:
+
 /usr/include/asm-generic/posix_types.h:
 
 /usr/include/c++/11.1.0/bits/max_size_type.h:
@@ -783,6 +802,8 @@ CMakeFiles/RS232Tester.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/wctype.h:
 
 /usr/include/sched.h:
+
+/usr/include/c++/11.1.0/sstream:
 
 /usr/include/c++/11.1.0/cwchar:
 
