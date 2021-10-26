@@ -1,59 +1,113 @@
 #include "serial.hpp"
 #include <chrono>
 #include <fmt/format.h>
-#include <iostream>
 #include <fstream>
-#include <sstream>
+#include <iostream>
 #include <optional>
+#include <random>
+#include <sstream>
 #include <thread>
 
-class FileGebabel {
-    explicit FileGebabel(std::string const& str, speed_t baudrate) {
-        std::ifstream ifs{"../trace"};
-        if(!ifs)
-        {
-            fmt::print("Foo\n");
-            return -1;
+template <bool Sane = true> struct FileGebabel {
+  std::string _path;
+  std::ifstream _file{_path};
+  std::vector<std::byte> _data;
+  std::mt19937 _randomGen{std::random_device{}()};
+  explicit FileGebabel(std::string const &str,
+                       [[maybe_unused]] speed_t baudrate)
+      : _path{str} {
+    if (!_file) {
+      fmt::print("Foo\n");
+      throw std::runtime_error("Bar");
+    }
+    std::string line;
+
+    while (std::getline(_file, line)) {
+      // fmt::print("{}\n", line);
+      std::vector<std::byte> linedata;
+      std::string element;
+      std::stringstream linestream{line};
+      while (std::getline(linestream, element, ',')) {
+        unsigned long number = std::stoul(element);
+        if (number > std::numeric_limits<unsigned char>::max()) {
+          throw std::runtime_error("Foobar");
         }
+        _data.push_back(static_cast<std::byte>(number));
+        // fmt::print(" [{}]\n", static_cast<int>(number));
+      }
     }
+  }
 
-    void send()
-    {
-        return;
+  void send([[maybe_unused]] std::byte const *buffer,
+            [[maybe_unused]] std::size_t size) {
+
+    return;
+  }
+
+  std::size_t recv_nonblocking(std::byte *buffer, std::size_t size) {
+    std::uniform_int_distribution<size_t> distro(0, size);
+    size_t n{distro(_randomGen)};
+    if constexpr (!Sane) {
+      // DO Babel
     }
+    std::copy_n(_data.begin(), n, buffer);
+    _data.erase(_data.begin(), std::next(_data.begin(), n));
+    return n;
+  }
 
-    std::size_t recv_nonblocking(std::byte* buffer, std::size_t size)
-    {
-        std::string line;
-        std::vector<std::array<std::byte, 15>> data;
-        while(std::getline(ifs, line))
-        { 
-            //fmt::print("{}\n", line);
-            std::array<std::byte, 15> linedata;
-            auto it = linedata.begin();
-            std::string element;
-            std::stringstream linestream{line};
-            while(std::getline(linestream, element, ','))
-            {
-                unsigned char number = std::stoi(element);
-                *it = std::byte{number};
-                it++;
-                //fmt::print(" [{}]\n", static_cast<int>(number));
-            }
-            data.push_back(linedata);
-        } 
-
-    } 
-    
+  template <typename Period, typename Rep>
+  bool can_receive(
+      [[maybe_unused]] std::chrono::duration<Rep, Period> const &timeout) {
+    return true;
+  }
 };
 
-template <typename SERIAL>
-class Incubator {
+template <typename Serial> struct Incubator {
   std::string _dev;
-  SERIAL _conn{_dev, B9600};
+  Serial _conn{_dev, B9600};
+  using clock_t = std::chrono::steady_clock;
+  std::vector<std::byte> _fifo;
+  static constexpr std::size_t MaxPackageSize{50};
+
+  struct Package {
+    std::byte firstByte;
+    std::vector<std::byte> data;
+    template <bool ByteOrder = false> unsigned int targetValue() const {
+
+      if constexpr (ByteOrder) {
+        return std::to_integer<unsigned int>(data[0]) << 8 |
+               std::to_integer<unsigned int>(data[1]);
+      } else {
+        // Extract targetValue from data
+        return std::to_integer<unsigned int>(data[1]) << 8 |
+               std::to_integer<unsigned int>(data[0]);
+      }
+    }
+    template <bool ByteOrder = false> std::int32_t currentValue() {
+      if constexpr (ByteOrder) {
+        return std::to_integer<int32_t>(data[5]) << 24 |
+               std::to_integer<int32_t>(data[4]) << 16 |
+               std::to_integer<int32_t>(data[3]) << 8 |
+               std::to_integer<int32_t>(data[2]);
+
+      } else {
+        return std::to_integer<int32_t>(data[2]) << 24 |
+               std::to_integer<int32_t>(data[3]) << 16 |
+               std::to_integer<int32_t>(data[4]) << 8 |
+               std::to_integer<int32_t>(data[5]);
+      }
+    }
+
+    std::uint8_t dataLength() const {
+      return std::to_integer<std::uint8_t>(firstByte) & 0x0F;
+    }
+    std::uint8_t command() const {
+      return std::to_integer<std::uint8_t>(firstByte) & 0xF0;
+    }
+  };
+
   template <std::size_t N>
   std::optional<std::array<std::byte, N>> tryReceive() {
-    using clock_t = std::chrono::steady_clock;
     auto const enter = clock_t::now();
     std::stop_token st{_t.get_stop_token()};
 
@@ -73,6 +127,68 @@ class Incubator {
     }
     return {};
   }
+  template <typename I> std::byte calcBCC(I first, I last) {
+    std::byte bcc{};
+    for (auto it = first; it < last; ++it) {
+      bcc ^= *it;
+    }
+    return ~bcc;
+  }
+
+  bool checkBCC(std::vector<std::byte> const &package) {
+    if (package.size() < 5) {
+      return false;
+    }
+    std::byte bcc{calcBCC(package.begin() + 1, package.end() - 2)};
+    return bcc == *(package.end() - 2);
+  }
+
+  std::optional<Package> parse(std::vector<std::byte> &fifo) {
+    auto clearTillNextStartByte = [&](std::size_t skip) {
+      auto iterBegin =
+          std::find(std::next(fifo.begin(), std::min(skip, fifo.size())),
+                    fifo.end(), std::byte{0x02});
+      fifo.erase(fifo.begin(), iterBegin);
+    };
+    clearTillNextStartByte(0);
+    auto iterEnd = std::find(fifo.begin(), fifo.end(), std::byte{0x03});
+    if (iterEnd == fifo.end()) {
+      if (fifo.size() > MaxPackageSize) {
+        clearTillNextStartByte(1);
+      }
+      return {};
+    }
+    std::size_t d{
+        static_cast<std::size_t>(std::distance(fifo.begin(), iterEnd))};
+    if (d > MaxPackageSize) {
+      clearTillNextStartByte(1);
+      return {};
+    }
+    std::vector<std::byte> temp(d + 1);
+    std::copy_n(fifo.begin(), temp.size(), temp.begin());
+    clearTillNextStartByte(1);
+    if (!checkBCC(temp)) {
+      return {};
+    }
+    Package p;
+    p.firstByte = temp[1];
+    temp.erase(temp.begin(), temp.begin() + 2);
+    temp.erase(temp.end() - 2, temp.end());
+    p.data = temp;
+    return p;
+  }
+
+  template <typename Rep, typename Period>
+  std::optional<Package>
+  getPacket(std::chrono::duration<Rep, Period> const &timeout) {
+    if (!_conn.can_receive(timeout)) {
+      return {};
+    }
+    std::array<std::byte, MaxPackageSize> buffer;
+    std::size_t n = _conn.recv_nonblocking(buffer.data(), buffer.size());
+    std::copy_n(buffer.begin(), n, std::back_inserter(_fifo));
+    return parse(_fifo);
+  }
 
   void sendData(std::byte data) {
     std::byte command{0b0110'0001};
@@ -89,20 +205,20 @@ class Incubator {
       return {};
     }
     // Dereference optional to array
-    std::array<std::byte, 17> const &x = *buffer;
-    fmt::print("ArrTemp: {}\n", fmt::join(x, ", "));
+    // std::array<std::byte, 17> const &x = *buffer;
+    // fmt::print("ArrTemp: {}\n", fmt::join(x, ", "));
     // Do something...
     return 15.0;
   }
 
   std::optional<double> getCO2() {
     sendData(std::byte{0b0001'0001});
-    auto buffer = tryReceive<16>();
+    auto buffer = tryReceive<15>();
     if (!buffer) {
       return {};
     }
     // Dereference optional to array
-    std::array<std::byte, 16> const &x = *buffer;
+    std::array<std::byte, 15> const &x = *buffer;
     fmt::print("ArrCO2: {}\n", fmt::join(x, ", "));
     // Do something...
     return 14.0;
@@ -110,14 +226,20 @@ class Incubator {
 
   void run() {
     std::stop_token st{_t.get_stop_token()};
+    std::size_t n{0};
     while (!st.stop_requested()) {
       try {
-        auto o_temp = getTemperature();
-        auto o_co2 = getCO2();
-
-        if (o_temp && o_co2) {
-          fmt::print("Temp Answer:\t{}\n", *o_temp);
-          fmt::print("CO2 Answer:\t{}\n", *o_co2);
+        // auto o_temp = getTemperature();
+        // auto o_co2 = getCO2();
+        auto o_co2 = getPacket(std::chrono::milliseconds(500));
+        if (o_co2) {
+          // fmt::print("C{}: TV:{} CV:{}\n", o_co2->command(),
+          // o_co2->targetValue(),
+          //           o_co2->currentValue());
+          fmt::print("{} {}\n", n, o_co2->currentValue());
+          // fmt::print("Temp Answer:\t{}\n", *o_temp);
+          // fmt::print("CO2 Answer:\t{}\n", *o_co2);
+          ++n;
         }
       } catch (std::exception const &e) {
         fmt::print("Fehler: {}\n", e.what());
@@ -132,32 +254,8 @@ public:
 };
 
 int main() {
-    //Incubator<Serial> inc{"/dev/ttyUSB0"};
-    std::string line;
-    std::vector<std::array<std::byte, 15>> data;
-    while(std::getline(ifs, line))
-    {
-        //fmt::print("{}\n", line);
-        std::array<std::byte, 15> linedata;
-        auto it = linedata.begin();
-        std::string element;
-        std::stringstream linestream{line};
-        while(std::getline(linestream, element, ','))
-        {
-            unsigned char number = std::stoi(element);
-            *it = std::byte{number};
-            it++;
-            //fmt::print(" [{}]\n", static_cast<int>(number));
-        }
-        data.push_back(linedata);
-    }
-    for(auto const& array : data)
-    {
-        //Do stuff with data in array
-        fmt::print("{}\n", fmt::join(array, ","));
-    }
-    while (false) 
-    {
-        std::this_thread::sleep_for(std::chrono::seconds{1});
-    }
+  Incubator<FileGebabel<true>> inc{"../trace"};
+  while (true) {
+    std::this_thread::sleep_for(std::chrono::seconds{1});
+  }
 }
