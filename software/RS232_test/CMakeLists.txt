@@ -19,7 +19,7 @@ endif()
 
 find_package(fmt)
 find_package(Threads)
-find_package(Iterator)
+
 
 add_executable(RS232Tester 
     src/main.cpp
@@ -31,5 +31,4 @@ target_link_libraries(RS232Tester PRIVATE
     toxic_spokes::sockets
     fmt::fmt
     Threads::Threads
-    Iterator::Iterator
     )
