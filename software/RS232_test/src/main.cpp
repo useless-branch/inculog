@@ -8,6 +8,10 @@
 #include <sstream>
 #include <thread>
 
+//TODO: 1. Thread A -> empfängt mit getPackage -> ruft CO2Calc oder TempCalc auf
+//      2. Thread B schreibt regelmäßig SendRequest (CO2 und Temp) -> eventuell in einem?
+//      3. Unterscheidung zwischen CO2 und Temp Paketen anhand von Command
+
 template <bool Sane = true> struct FileGebabel {
   std::string _path;
   std::ifstream _file{_path};
@@ -83,19 +87,12 @@ template <typename Serial> struct Incubator {
                std::to_integer<unsigned int>(data[0]);
       }
     }
-    template <bool ByteOrder = false> std::int32_t currentValue() {
-      if constexpr (ByteOrder) {
+    //TODO: currentValue umschreiben auf first/last
+     std::int32_t currentValue() {
         return std::to_integer<int32_t>(data[5]) << 24 |
                std::to_integer<int32_t>(data[4]) << 16 |
                std::to_integer<int32_t>(data[3]) << 8 |
                std::to_integer<int32_t>(data[2]);
-
-      } else {
-        return std::to_integer<int32_t>(data[2]) << 24 |
-               std::to_integer<int32_t>(data[3]) << 16 |
-               std::to_integer<int32_t>(data[4]) << 8 |
-               std::to_integer<int32_t>(data[5]);
-      }
     }
 
     std::uint8_t dataLength() const {
@@ -144,6 +141,10 @@ template <typename Serial> struct Incubator {
   }
 
   std::optional<Package> parse(std::vector<std::byte> &fifo) {
+        // TODO: if 0x03 is in Data -> parsing goes wrong
+        // Repair broken parsing -> search for next start byte and check if byte before is 0x03.
+        // Then check byte after start byte to determine data length.
+        // If data length from data is exactly the same as the length in data continue.
     auto clearTillNextStartByte = [&](std::size_t skip) {
       auto iterBegin =
           std::find(std::next(fifo.begin(), std::min(skip, fifo.size())),
@@ -151,20 +152,23 @@ template <typename Serial> struct Incubator {
       fifo.erase(fifo.begin(), iterBegin);
     };
     clearTillNextStartByte(0);
-    auto iterEnd = std::find(fifo.begin(), fifo.end(), std::byte{0x03});
+    //Fifo starts with Start Byte
+    auto iterEnd = std::find(fifo.begin()+1, fifo.end(), std::byte{0x02});
     if (iterEnd == fifo.end()) {
+        //Fifo to short (no new start byte)
       if (fifo.size() > MaxPackageSize) {
         clearTillNextStartByte(1);
       }
       return {};
     }
+    // Valid Data from STX to STX found
     std::size_t d{
         static_cast<std::size_t>(std::distance(fifo.begin(), iterEnd))};
     if (d > MaxPackageSize) {
       clearTillNextStartByte(1);
       return {};
     }
-    std::vector<std::byte> temp(d + 1);
+    std::vector<std::byte> temp(d);
     std::copy_n(fifo.begin(), temp.size(), temp.begin());
     clearTillNextStartByte(1);
     if (!checkBCC(temp)) {
@@ -175,6 +179,10 @@ template <typename Serial> struct Incubator {
     temp.erase(temp.begin(), temp.begin() + 2);
     temp.erase(temp.end() - 2, temp.end());
     p.data = temp;
+    if(p.dataLength() != temp.size())
+        {
+            return {};
+        }
     return p;
   }
 
@@ -237,6 +245,7 @@ template <typename Serial> struct Incubator {
           // o_co2->targetValue(),
           //           o_co2->currentValue());
           fmt::print("{} {}\n", n, o_co2->currentValue());
+          //fmt::print("{}\t{}\n", n, fmt::join(o_co2->data,",\t"));
           // fmt::print("Temp Answer:\t{}\n", *o_temp);
           // fmt::print("CO2 Answer:\t{}\n", *o_co2);
           ++n;
