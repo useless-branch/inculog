@@ -1,1 +1,0 @@
-/usr/bin/g++-10     CMakeFiles/RS232Tester.dir/src/main.cpp.o  -o RS232Tester  toxic_spokes/libtoxic_spokes_sockets.a /usr/lib/x86_64-linux-gnu/libfmt.a -lpthread 
