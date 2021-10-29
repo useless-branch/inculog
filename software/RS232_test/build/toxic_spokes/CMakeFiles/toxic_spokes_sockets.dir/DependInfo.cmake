@@ -1,16 +1,18 @@
-
-# Consider dependencies only in project.
-set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
-
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
   )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/patrick/git/incusens/software/RS232_test/toxic_spokes/src/toxic_spokes/detail/FileDescriptor.cpp" "/home/patrick/git/incusens/software/RS232_test/build/toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/FileDescriptor.cpp.o"
+  "/home/patrick/git/incusens/software/RS232_test/toxic_spokes/src/toxic_spokes/detail/IPAddress.cpp" "/home/patrick/git/incusens/software/RS232_test/build/toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/IPAddress.cpp.o"
+  "/home/patrick/git/incusens/software/RS232_test/toxic_spokes/src/toxic_spokes/detail/Socket_Impl.cpp" "/home/patrick/git/incusens/software/RS232_test/build/toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/Socket_Impl.cpp.o"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
-# The set of dependency files which are needed:
-set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/patrick/git/incusens/software/RS232_test/toxic_spokes/src/toxic_spokes/detail/FileDescriptor.cpp" "toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/FileDescriptor.cpp.o" "gcc" "toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/FileDescriptor.cpp.o.d"
-  "/home/patrick/git/incusens/software/RS232_test/toxic_spokes/src/toxic_spokes/detail/IPAddress.cpp" "toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/IPAddress.cpp.o" "gcc" "toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/IPAddress.cpp.o.d"
-  "/home/patrick/git/incusens/software/RS232_test/toxic_spokes/src/toxic_spokes/detail/Socket_Impl.cpp" "toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/Socket_Impl.cpp.o" "gcc" "toxic_spokes/CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/Socket_Impl.cpp.o.d"
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../toxic_spokes/src"
   )
 
 # Targets to which this target links.

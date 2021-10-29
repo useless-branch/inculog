@@ -1,2 +1,2 @@
-/usr/bin/ar qc libtoxic_spokes_sockets.a CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/IPAddress.cpp.o CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/FileDescriptor.cpp.o CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/Socket_Impl.cpp.o
+/usr/bin/ar qc libtoxic_spokes_sockets.a  CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/IPAddress.cpp.o CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/FileDescriptor.cpp.o CMakeFiles/toxic_spokes_sockets.dir/src/toxic_spokes/detail/Socket_Impl.cpp.o
 /usr/bin/ranlib libtoxic_spokes_sockets.a

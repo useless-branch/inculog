@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/RS232Tester.dir/src/main.cpp.o"
-  "CMakeFiles/RS232Tester.dir/src/main.cpp.o.d"
   "RS232Tester"
   "RS232Tester.pdb"
 )
