@@ -45,7 +45,7 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.3
+          "min_clearance": 0.15
         }
       },
       "diff_pair_dimensions": [
@@ -55,7 +55,13 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "clearance|46500000|25974999|4c0779c9-483e-40cf-98ce-4626db328ded|1739f90a-12d4-45ed-a599-7d41f6295c09",
+        "clearance|46500000|8025001|f5b82955-1dc2-4f08-aa7c-6b5a6d87f62b|1bfa309b-6a5d-4f5b-9eec-f1e3022a738a",
+        "courtyards_overlap|43225842|26729999|566a1019-8bc2-45fb-9622-ef04a3ec1961|fbd181ad-13e8-4441-a67f-df956f20f099",
+        "courtyards_overlap|49099999|7760106|6f908d1f-9ede-4c84-a0d4-a218dbad72c8|fbd181ad-13e8-4441-a67f-df956f20f099",
+        "courtyards_overlap|8063279|5500001|a01bb495-5215-4560-ab74-8606021c8f2a|b8a82674-794d-4311-a152-18be89f70893"
+      ],
       "meta": {
         "version": 2
       },
@@ -122,7 +128,9 @@
         0.0,
         0.2,
         0.25,
-        0.3
+        0.3,
+        0.45,
+        0.6
       ],
       "via_dimensions": [
         {
@@ -132,6 +140,10 @@
         {
           "diameter": 0.45,
           "drill": 0.2
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
         }
       ],
       "zones_allow_external_fillets": false,
@@ -373,7 +385,7 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.1,
-        "via_diameter": 0.4,
+        "via_diameter": 0.45,
         "via_drill": 0.2,
         "wire_width": 6.0
       }
