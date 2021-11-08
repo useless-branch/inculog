@@ -15,3 +15,6 @@ bom
 *-backups
 *.net
 _autosave*
+/sensor_board/gbr
+*.gbr
+*.gbrjob
