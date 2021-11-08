@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name "ownLib")(type "KiCad")(uri "/home/patrick/git/kicad_libs/ownLib.pretty")(options "")(descr ""))
-)
