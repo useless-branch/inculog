@@ -1,6 +1,7 @@
 #include "package.hpp"
 
 #include <chrono>
+#include <concepts>
 #include <fmt/format.h>
 #include <fstream>
 #include <iterator>
@@ -9,6 +10,10 @@
 #include <thread>
 
 template<typename Serial>
+    requires requires(Serial s, std::byte* p, std::size_t ss) { 
+        {Serial{std::string{}, speed_t{}}};
+        {s.recv_nonblocking(p,ss)}-> std::same_as<std::size_t>;
+    }
 struct Incubator {
     std::string _dev;
     Serial      _conn{_dev, B9600};
@@ -99,7 +104,7 @@ struct Incubator {
 
     template<typename Rep, typename Period>
     std::optional<Package> getPacket(std::chrono::duration<Rep, Period> const& timeout) {
-        if(!_conn.can_receive(timeout)) {
+        if(!_conn.can_recv(timeout)) {
             return {};
         }
 
@@ -122,6 +127,7 @@ struct Incubator {
         while(!st.stop_requested()) {
             try {
                 sendData(std::byte{0b0001'0001});
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 sendData(std::byte{0b0001'0000});
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
             } catch(std::exception const& e) {
@@ -146,17 +152,17 @@ struct Incubator {
                                  << "," << 0x03 << '\n';
                     _output_file.flush();
                     switch(buffer->command()) {
-                    case 0x60:
+                    case 11:
                         //CO2
                         //Call Function for CO2 calculatio
                         fmt::print("Got CO2 Package: {}\n", buffer->currentValue());
                         break;
-                    case 0x62:
+                    case 13:
                         //Temperature
                         //Call Function for Temperature Calculation
-                        fmt::print("Got Temp Package: {}\n", buffer->currentValue());
+                        fmt::print("Got Temperature Package: {}\n", buffer->currentValue());
                         break;
-                        default: fmt::print("Not a known package ID: {}!\n", buffer->command());
+                    default: fmt::print("Not a known package ID: {}!\n", buffer->command());
                     }
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));

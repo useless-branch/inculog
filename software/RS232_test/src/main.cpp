@@ -11,7 +11,7 @@
 
 int main()
 {
-  Incubator<FileDummy<true>> inc{"../trace"};
+  Incubator<Serial> inc{"/dev/ttyUSB0"};
   while (true)
   {
     std::this_thread::sleep_for(std::chrono::seconds{1});

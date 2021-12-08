@@ -24,6 +24,6 @@ struct Package
     }
     std::uint8_t command() const
     {
-      return std::to_integer<std::uint8_t>(firstByte) & 0xF0;
+      return std::to_integer<std::uint8_t>(firstByte) & 0xF0 >> 4;
     }
   };
