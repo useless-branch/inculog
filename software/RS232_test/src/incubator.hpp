@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <concepts>
+#include <cstddef>
 #include <fmt/format.h>
 #include <fstream>
 #include <iterator>
@@ -10,17 +11,18 @@
 #include <thread>
 
 template<typename Serial>
-    requires requires(Serial s, std::byte* p, std::size_t ss) { 
-        {Serial{std::string{}, speed_t{}}};
-        {s.recv_nonblocking(p,ss)}-> std::same_as<std::size_t>;
-    }
+requires requires(Serial s, std::byte* p, std::size_t ss) {
+    {Serial{std::string{}, speed_t{}}};
+    {
+        s.recv_nonblocking(p, ss)
+        } -> std::same_as<std::size_t>;
+}
 struct Incubator {
-    std::string _dev;
-    Serial      _conn{_dev, B9600};
-    using clock_t = std::chrono::steady_clock;
+    std::string                  _dev;
+    Serial                       _conn{_dev, B9600};
     std::vector<std::byte>       _fifo;
     static constexpr std::size_t MaxPackageSize{50};
-    std::ofstream                _output_file{"./trace_out"};
+    using clock_t = std::chrono::steady_clock;
 
     template<std::size_t N>
     std::optional<std::array<std::byte, N>> tryReceive() {
@@ -88,7 +90,9 @@ struct Incubator {
         std::copy_n(fifo.begin(), temp.size(), temp.begin());
         clearTillNextStartByte(1);
         if(!checkBCC(temp)) {
-            return {};
+            //fmt::print("Wrong BCC!\n");
+            //TODO insert BCC back into Project!
+            //return {};
         }
 
         Package p;
@@ -143,25 +147,21 @@ struct Incubator {
             try {
                 auto buffer = getPacket(std::chrono::milliseconds(500));
                 if(buffer) {
-                    _output_file << 0x02 << "," << std::to_integer<int>(buffer->firstByte) << ",";
-                    for(auto d : buffer->data) {
-                        _output_file << std::to_integer<int>(d) << ",";
-                    }
-                    _output_file << std::to_integer<int>(
-                      calcBCC(buffer->data.begin(), buffer->data.end()))
-                                 << "," << 0x03 << '\n';
-                    _output_file.flush();
                     switch(buffer->command()) {
-                    case 11:
-                        //CO2
-                        //Call Function for CO2 calculatio
-                        fmt::print("Got CO2 Package: {}\n", buffer->currentValue());
-                        break;
-                    case 13:
-                        //Temperature
-                        //Call Function for Temperature Calculation
-                        fmt::print("Got Temperature Package: {}\n", buffer->currentValue());
-                        break;
+                    case 11:   //CO2
+                        {
+                            float current{buffer->currentValue()};
+                            float target{buffer->targetValue()};
+                            fmt::print("Co2:\t Target: {}%\t Current: {}%\n", target, current);
+                            break;
+                        }
+                    case 13:   //Temperature
+                        {
+                            float current{buffer->currentValue()};
+                            float target{buffer->targetValue()};
+                            fmt::print("Temp:\t Target: {}C\t Current: {}C\n", target, current);
+                            break;
+                        }
                     default: fmt::print("Not a known package ID: {}!\n", buffer->command());
                     }
                 }
@@ -172,12 +172,7 @@ struct Incubator {
             }
         }
     }
-    explicit Incubator(std::string const& dev) : _dev{dev} {
-        if(!_output_file) {
-            fmt::print("Warning: could not find file...\n");
-            throw std::runtime_error("input file could not be found");
-        }
-    }
+    explicit Incubator(std::string const& dev) : _dev{dev} {}
     std::jthread _sendThread{&Incubator::sendThreadFunc, this};
     std::jthread _receiveThread{&Incubator::receiveThreadFunc, this};
 };

@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(RS232Tester)
 
+add_compile_options (-fdiagnostics-color=always)
+add_compile_options (-Wfatal-errors)
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options("/W4")
     message("Compiling with: Microsoft Compiler")
@@ -16,6 +19,8 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options("-Wall" "-Wextra" "-pedantic" "-Wfatal-errors" "-fsanitize=thread")
     message("Compiling with: Clang Compiler")
 endif()
+
+
 
 find_package(fmt)
 find_package(Threads)
