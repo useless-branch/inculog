@@ -1,23 +1,24 @@
-#include <bit>
+#pragma once
+
 #include <cstddef>
 #include <vector>
+#include <cstring>
 
 struct Package {
     std::byte              firstByte;
     std::vector<std::byte> data;
 
     float targetValue() const {
-        std::uint32_t value{
-          std::to_integer<unsigned int>(data[0]) << 8
-          | std::to_integer<unsigned int>(data[1]) << 0};
+        std::uint32_t value{0};
+        std::array<std::byte, 2> foo{data[1], data[0]};
+        std::memcpy(&value, &foo[0], 2);
         return value * 0.1;
     }
 
     float currentValue() const {
-        std::int32_t value{
-          std::to_integer<int32_t>(data[5]) << 24 | std::to_integer<int32_t>(data[4]) << 16
-          | std::to_integer<int32_t>(data[3]) << 8 | std::to_integer<int32_t>(data[2])};
-        return std::bit_cast<float>(value);
+        float value{0.0};
+        std::memcpy(&value, &data[2], sizeof(value));
+        return value;
     }
 
     std::uint8_t dataLength() const { return std::to_integer<std::uint8_t>(firstByte) & 0x0F; }
