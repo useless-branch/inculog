@@ -9,5 +9,6 @@ struct Incubator {
     std::string   RS232_dev;
     RS232<Serial> BusDevice;
 
-    explicit Incubator(std::string const& dev) : RS232_dev{dev}, BusDevice{RS232_dev} {}
+    explicit Incubator(std::string const &dev) : RS232_dev{dev}, BusDevice{RS232_dev} {}
 };
+
