@@ -84,7 +84,6 @@ struct Serial {
 
     void send(std::byte const *buffer, std::size_t size) {
         ::write(fd.fd(), buffer, size);
-        fsync(fd.fd());
     }
 
     template<typename Rep, typename Period>

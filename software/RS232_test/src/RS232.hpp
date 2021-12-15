@@ -128,7 +128,7 @@ struct RS232 {
 
     void sendData(std::byte data) {
         std::byte command{0b0110'0001};
-        std::array<std::byte, 6>
+        std::array<std::byte, 5>
                 buffer{std::byte{0x02}, command, data, ~(command ^ data), std::byte{0x03}};
 
         _conn.send(buffer.data(), buffer.size());
