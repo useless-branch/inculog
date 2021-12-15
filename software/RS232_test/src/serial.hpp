@@ -73,8 +73,8 @@ struct Serial {
 
     std::size_t recv_nonblocking(std::byte* buffer, std::size_t size) {
         auto const status = ::read(fd.fd(), buffer, size);
-        if(-1 == status) {
-            if(is_errno_recoverable(errno)) {
+        if (-1 == status) {
+            if (is_errno_recoverable(errno)) {
                 return 0;
             }
             throw std::system_error(errno, std::system_category(), "read failed");
@@ -82,10 +82,13 @@ struct Serial {
         return static_cast<std::size_t>(status);
     }
 
-    void send(std::byte const* buffer, std::size_t size) { ::write(fd.fd(), buffer, size); }
+    void send(std::byte const *buffer, std::size_t size) {
+        ::write(fd.fd(), buffer, size);
+        fsync(fd.fd());
+    }
 
     template<typename Rep, typename Period>
-    bool can_recv(std::chrono::duration<Rep, Period> const& timeout) {
+    bool can_recv(std::chrono::duration<Rep, Period> const &timeout) {
         return fd.can_recv(timeout);
     }
 };
