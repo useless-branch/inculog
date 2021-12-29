@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(RS232Tester)
+project(Inculog)
 
 add_compile_options (-fdiagnostics-color=always)
 add_compile_options (-Wfatal-errors)
@@ -35,12 +35,12 @@ find_package(fmt)
 find_package(Threads)
 
 
-add_executable(RS232Tester
+add_executable(Inculog
     src/main.cpp)
 
 add_subdirectory(toxic_spokes)
 
-target_link_libraries(RS232Tester PRIVATE
+target_link_libraries(Inculog PRIVATE
     toxic_spokes::sockets
     fmt::fmt-header-only
     Threads::Threads
