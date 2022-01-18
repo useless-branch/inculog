@@ -2,9 +2,12 @@
 #include "filedummy.hpp"
 #include "incubator.hpp"
 #include "serial.hpp"
+#include "CANManager.h"
 
 #include <chrono>
 #include <string>
+
+//Input is: $> ./Inculog <API-Token> <IP-Address>
 
 int main(int argc, char** argv) {
     if(argc != 3) {
@@ -30,12 +33,23 @@ int main(int argc, char** argv) {
         };
     };
 
-    Incubator<FileDummy<true>> inc{
-      "trace_out",
+    Incubator<Serial> inc{
+      "/dev/ttyS0",
       lambdaGenerator("CO2Target"),
       lambdaGenerator("CO2"),
       lambdaGenerator("TemperatureTarget"),
       lambdaGenerator("Temperature")};
+
+    CANManager can{
+        "can0",
+        lambdaGenerator("TemperatureInside"),
+        lambdaGenerator("HumidAbsInside"),
+        lambdaGenerator("HumidRelInside"),
+        lambdaGenerator("VOCInside"),
+        lambdaGenerator("CO2EquivalentInside"),
+        lambdaGenerator("LightInside"),
+        lambdaGenerator("AirPressureInside")
+    };
 
     while(true) {
         std::this_thread::sleep_for(std::chrono::seconds{1});

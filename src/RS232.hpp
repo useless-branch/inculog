@@ -87,9 +87,9 @@ struct RS232 {
         std::copy_n(fifo.begin(), temp.size(), temp.begin());
         clearTillNextStartByte(1);
         if(!checkBCC(temp)) {
-            //fmt::print("Wrong BCC!\n");
+            fmt::print("Wrong BCC!\n");
             //TODO insert BCC back into Project!
-            //return {};
+            return {};
         }
 
         Package p;

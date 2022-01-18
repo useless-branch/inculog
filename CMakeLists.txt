@@ -36,7 +36,7 @@ find_package(Threads)
 
 
 add_executable(Inculog
-    src/main.cpp)
+    src/main.cpp src/CANManager.h)
 
 add_subdirectory(toxic_spokes)
 
