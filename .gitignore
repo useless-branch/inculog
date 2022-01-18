@@ -296,3 +296,6 @@ TSWLatexianTemp*
 # Build directories
 build
 build_pi
+
+# Ide folder
+.idea
