@@ -1,10 +1,12 @@
+#include "CANManager.h"
 #include "InfluxManager.hpp"
 #include "filedummy.hpp"
 #include "incubator.hpp"
 #include "serial.hpp"
-#include "CANManager.h"
+#include "SensorConfig.hpp"
 
 #include <chrono>
+#include <fmt/chrono.h>
 #include <string>
 
 //Input is: $> ./Inculog <API-Token> <IP-Address>
@@ -21,35 +23,45 @@ int main(int argc, char** argv) {
 
     auto lambdaGenerator = [&influxManager](std::string const& name) {
         return [=, &influxManager](float value) {
-            fmt::print("{}:{}\n", name, value);
-            influxManager.send(
-                    fmt::format(
+            //fmt::print("{}::{}: {}\n","Incubator", name, value);
+            influxManager.send(fmt::format(
               FMT_STRING("{} value={} {}\n"),
-               name,
-               value,
-               std::chrono::duration_cast<std::chrono::nanoseconds>(
-                 std::chrono::system_clock::now().time_since_epoch())
-                 .count()));
+              name,
+              value,
+              std::chrono::duration_cast<std::chrono::nanoseconds>(
+                std::chrono::system_clock::now().time_since_epoch())
+                .count()), "Incubator");
+        };
+    };
+    auto lambdaGeneratorWOName = [&influxManager]() {
+        return [=, &influxManager](float value, std::string name, std::string bucketName) {
+            //fmt::print("{}::{}: {}\n", bucketName, name, value);
+            influxManager.send(fmt::format(
+                    FMT_STRING("{} value={} {}\n"),
+                    name,
+                    value,
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count()), bucketName);
         };
     };
 
     Incubator<Serial> inc{
       "/dev/ttyS0",
       lambdaGenerator("CO2Target"),
-      lambdaGenerator("CO2"),
+      lambdaGenerator("CO2_Incubator"),
       lambdaGenerator("TemperatureTarget"),
-      lambdaGenerator("Temperature")};
+      lambdaGenerator("Temperature_Incubator")};
 
-    CANManager can{
-        "can0",
-        lambdaGenerator("TemperatureInside"),
-        lambdaGenerator("HumidAbsInside"),
-        lambdaGenerator("HumidRelInside"),
-        lambdaGenerator("VOCInside"),
-        lambdaGenerator("CO2EquivalentInside"),
-        lambdaGenerator("LightInside"),
-        lambdaGenerator("AirPressureInside")
-    };
+    CANManager<std::variant<SensorConfig::IncubatorBoard::Sensors::Temperature,
+            SensorConfig::IncubatorBoard::Sensors::Humidity::absolute,
+            SensorConfig::IncubatorBoard::Sensors::Humidity::relative,
+            SensorConfig::IncubatorBoard::Sensors::AirQuality::VOC,
+            SensorConfig::IncubatorBoard::Sensors::AirQuality::CO2Eq,
+            SensorConfig::IncubatorBoard::Sensors::Pressure,
+            SensorConfig::IncubatorBoard::Sensors::Light>> can{
+      "can0",
+      lambdaGeneratorWOName()};
 
     while(true) {
         std::this_thread::sleep_for(std::chrono::seconds{1});

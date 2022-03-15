@@ -29,8 +29,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message("Compiling with: Clang Compiler")
 endif()
 
-
-
 find_package(fmt)
 find_package(Threads)
 

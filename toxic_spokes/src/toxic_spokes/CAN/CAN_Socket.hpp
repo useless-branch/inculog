@@ -28,6 +28,8 @@ namespace detail {
             bind_CAN(interface);
         }
 
+        using Socket_Impl::can_recv;
+
         void
           send(Message const& data) {
             if(data.size > 8) {

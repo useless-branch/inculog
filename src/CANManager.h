@@ -4,21 +4,20 @@
 
 #pragma once
 #include "toxic_spokes/CAN/CAN_Socket.hpp"
+#include "SensorConfig.hpp"
 
+#include <fmt/format.h>
 #include <cassert>
 #include <functional>
 #include <string>
 #include <thread>
 
+template <typename V>
 struct CANManager {
+    std::string canInterface;
     ts::CAN_Socket             canSocket;
-    std::function<void(float)> temperatureFunction;
-    std::function<void(float)> humidAbsFunction;
-    std::function<void(float)> humidRelFunction;
-    std::function<void(float)> vocFunction;
-    std::function<void(float)> co2eqFunction;
-    std::function<void(float)> lightFunction;
-    std::function<void(float)> pressureFunction;
+    std::function<void(float, std::string, std::string)> callbackFunction;
+
     using CanMessage = ts::CAN_Socket::Message;
     std::vector<CanMessage> sendQueue;
 
@@ -33,36 +32,19 @@ struct CANManager {
     };
 
     template<
-      typename TemperatureCallback,
-      typename HumidRelCallback,
-      typename HumidAbsCallback,
-      typename VocCallback,
-      typename CO2eqCallback,
-      typename LightCallback,
-      typename PressureCallback>
+      typename CallbackFunction>
     CANManager(
-      std::string         canInterface,
-      TemperatureCallback temperatureCallback,
-      HumidAbsCallback    humidAbsCallback,
-      HumidRelCallback    humidRelCallback,
-      VocCallback         vocCallback,
-      CO2eqCallback       co2eqCallback,
-      LightCallback       lightCallback,
-      PressureCallback    pressureCallback)
-      : canSocket{canInterface}
-      , temperatureFunction{temperatureCallback}
-      , humidAbsFunction{humidAbsCallback}
-      , humidRelFunction{humidRelCallback}
-      , vocFunction{vocCallback}
-      , co2eqFunction{co2eqCallback}
-      , lightFunction{lightCallback}
-      , pressureFunction{pressureCallback} {}
+      std::string const &       canInterface,
+      CallbackFunction callBackFunction)
+      : canInterface{canInterface}
+      , canSocket{canInterface}
+      , callbackFunction{callBackFunction} {}
 
     void sendThreadFunc() {
         auto stopToken{sendThread.get_stop_token()};
         while(!stopToken.stop_requested()) {
             if(!sendQueue.empty()) {
-                //Send stuff
+                //Send stuff with Mutex
             } else {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
@@ -71,91 +53,103 @@ struct CANManager {
     void recvThreadFunc() {
         auto stopToken{recvThread.get_stop_token()};
         while(!stopToken.stop_requested()) {
-            CanMessage msg{canSocket.recv()};
-            handleMessage(msg);
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            try {
+                if (canSocket.can_recv(std::chrono::milliseconds(1000))) {
+                    CanMessage msg{canSocket.recv()};
+                    handleMessage<SensorConfig::IncubatorBoard>(msg);
+                    handleMessage<SensorConfig::FridgeBoard_1>(msg);
+                } else {
+                    fmt::print("Got nothing to receive from CAN\n");
+                }
+            }
+            catch (std::exception& e){
+                canSocket = ts::CAN_Socket{canInterface};
+                fmt::print("{}\n", e.what());
+            }
+
         }
     }
 
+    template<typename Config>
     void handleMessage(CanMessage msg) {
         std::uint32_t id{msg.id};
         std::size_t   size{msg.size};
         auto          data{msg.data};
         switch(id) {
-        case 1:   // Temperature
+            case Config::Sensors::Temperature::canAddress:   // Temperature
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 float value = 0;
                 std::memcpy(&value, &data, sizeof(float));
-                temperatureFunction(value);
+                callbackFunction(value, Config::Sensors::Temperature::name, Config::name);
             }
             break;
 
-        case 2:   // Relative Humidity
+        case Config::Sensors::Humidity::relative::canAddress:   // Relative Humidity
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 float value = 0;
                 std::memcpy(&value, &data, sizeof(float));
-                humidRelFunction(value);
+                callbackFunction(value, Config::Sensors::Humidity::relative::name, Config::name);
             }
             break;
 
-        case 3:   // Absolute Humidity
+        case Config::Sensors::Humidity::absolute::canAddress:   // Absolute Humidity
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 float value = 0;
                 std::memcpy(&value, &data, sizeof(float));
-                humidAbsFunction(value);
+                callbackFunction(value, Config::Sensors::Humidity::absolute::name, Config::name);
             }
             break;
 
-        case 4:   // VOC Value
+        case Config::Sensors::AirQuality::VOC::canAddress:   // VOC Value
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 std::uint32_t value = 0;
                 std::memcpy(&value, &data, sizeof(std::uint32_t));
-                vocFunction(static_cast<float>(value));
+                callbackFunction(value, Config::Sensors::AirQuality::VOC::name, Config::name);
             }
             break;
 
-        case 5:   // CO2 equivalent
+        case Config::Sensors::AirQuality::CO2Eq::canAddress:   // CO2 equivalent
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 std::uint32_t value = 0;
                 std::memcpy(&value, &data, sizeof(std::uint32_t));
-                co2eqFunction(static_cast<float>(value));
+                callbackFunction(value, Config::Sensors::AirQuality::CO2Eq::name, Config::name);
             }
             break;
 
-        case 6:   // Light
+        case Config::Sensors::Light::canAddress:   // Light
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 std::uint32_t value = 0;
                 std::memcpy(&value, &data, sizeof(std::uint32_t));
-                lightFunction(static_cast<float>(value));
+                callbackFunction(value, Config::Sensors::Light::name, Config::name);
             }
             break;
 
-        case 7:   // Pressure
+        case Config::Sensors::Pressure::canAddress:   // Pressure
             {
                 if(size != 4) {
                     throw std::runtime_error("Error!");
                 }
                 float value = 0;
                 std::memcpy(&value, &data, sizeof(float));
-                pressureFunction(value);
+                callbackFunction(value, Config::Sensors::Pressure::name, Config::name);
             }
             break;
 
