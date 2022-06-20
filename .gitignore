@@ -1,6 +1,6 @@
 # Remove KiCad Backups
 ./hardware/sensor_board/sensor_board-backups
-
+.idea
 # Remove PDF
 *.pdf
 
