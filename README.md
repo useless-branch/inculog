@@ -2,6 +2,8 @@
 Raspberry Pi Software to connect to an incubator device through RS232 and to an external sensor PCB via CAN.
 All data measured by the sensors in the incubator and the external PCB are collected and transmitted
 to an influxDB database.
+## Press Reference
+See the press release of this projet at: [Pforzheim University](https://www.hs-pforzheim.de/en/news_detailansicht/news/masterstudiengang_embedded_systems_student_optimiert_inkubator_im_labor)
 
 # Compiling the Software
 ## Building for PC
